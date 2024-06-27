@@ -20,24 +20,32 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
-    (() => {
-  'use strict'
+document.addEventListener('DOMContentLoaded', () => {
+  const forms = document.querySelectorAll('.needs-validation');
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = document.querySelectorAll('.needs-validation')
-
-  // Loop over them and prevent submission
   Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
+      // Get the price field
+      const priceField = form.querySelector('#price');
+      const priceValue = priceField.value;
+      
+      // Custom validation for price
+      if (isNaN(priceValue) || priceValue.trim() === '') {
+        priceField.setCustomValidity('Price must be a number');
+      } else {
+        priceField.setCustomValidity('');
       }
 
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      form.classList.add('was-validated');
+    }, false);
+  });
+});
+
 </script>
 </body>
 </html>

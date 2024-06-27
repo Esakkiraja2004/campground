@@ -2,6 +2,7 @@ const express  = require('express');
 const ejsMate = require('ejs-mate');
 const catchError = require('./utils/catchError');
 const expressError = require('./utils/expresserror')
+const joi  = require('joi');
 const path = require('path');
 const cammod = require('./models/schema');
 const methodOverride = require('method-override')
@@ -38,6 +39,15 @@ app.set('views' , path.join(__dirname, 'view'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const joiSchema = joi.object({
+  title : joi.string().required(),
+  location : joi.string().required(),
+  place: joi.string().required(),
+  description:joi.string().required(),
+  image: joi.string().required(),
+  price: joi.number().required()
+})
+
 app.get('/',(req, res) =>{
     res.render("index.ejs");
 });
@@ -61,7 +71,8 @@ app.get('/campgrounds/:id' , catchError(async(req, res) =>{
 
 
 app.post('/campgrounds', catchError(async (req, res) => {
-  if(!req.body)throw new expressError('ooops', 404);
+  const { error } = joiSchema.validate(req.body);
+  if (error) return res.status(400).render('campground/error', { err: error });
   const data = await new cammod(req.body);
   await data.save();
   res.redirect('/campgrounds');
@@ -75,14 +86,12 @@ app.get('/campgrounds/:id/edit', catchError(async (req, res) => {
 }));
 
 app.put('/campgrounds/:id', catchError(async (req, res) => {
-  try{
+  const { error } = joiSchema.validate(req.body);
+  if (error) return res.status(400).render('campground/error', { err: error });
   const {id} = req.params;
   const camp = await cammod.findByIdAndUpdate(id,{...req.body});
   await camp.save();
   res.redirect(`/campgrounds/${id}`);
-  }catch(e) {
-    res.send("ohh error")
-  }
 }));
 
 app.delete('/campgrounds/:id', catchError(async (req, res) => {
@@ -95,12 +104,13 @@ app.delete('/campgrounds/:id', catchError(async (req, res) => {
 
 app.all("*", (req, res, next) => {
 
-  next(new expressError('OOPS page not found!!',500));
+  next(new expressError('OOPS page not found!!',404));
 });
 
 app.use((err, req, res, next) =>{
-  const{status = 500, message = 'somthing went worng!!!!!!'} = err;
-  res.status(status).send(message);
+  const{status = 500} = err;
+  if(!err.message) err.message ="oops somthing went wrong!!!"
+  res.status(status).render('campground/error', {err});
 });
 
 app.listen(port , () =>{
