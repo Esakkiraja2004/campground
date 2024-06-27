@@ -75,11 +75,14 @@ app.get('/campgrounds/:id/edit', catchError(async (req, res) => {
 }));
 
 app.put('/campgrounds/:id', catchError(async (req, res) => {
+  try{
   const {id} = req.params;
   const camp = await cammod.findByIdAndUpdate(id,{...req.body});
   await camp.save();
   res.redirect(`/campgrounds/${id}`);
-  
+  }catch(e) {
+    res.send("ohh error")
+  }
 }));
 
 app.delete('/campgrounds/:id', catchError(async (req, res) => {
