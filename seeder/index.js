@@ -23,7 +23,6 @@ const connectDB = async () => {
 connectDB();
 
 const sam = array => array[Math.floor(Math.random() *array.length)]
-
 const sd = async () => {
 
     await cammod.deleteMany({});
