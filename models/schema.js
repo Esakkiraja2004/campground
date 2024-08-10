@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const campsch = new mongoose.Schema ({
@@ -6,7 +7,11 @@ const campsch = new mongoose.Schema ({
     place: 'string',
     description:'string',
     image: 'string',
-    price: 'number'
+    price: 'number',
+    reviews:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'review'
+    }]
 });
 
 const cammod = new mongoose.model('camp',campsch)

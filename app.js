@@ -5,6 +5,7 @@ const expressError = require('./utils/expresserror')
 const joi  = require('joi');
 const path = require('path');
 const cammod = require('./models/schema');
+const reviewSchema = require('./models/review');
 const methodOverride = require('method-override')
 const app = express();
 const port = 3000;
@@ -65,9 +66,25 @@ app.get('/campgrounds/newcamp',(req, res) => {
 
 app.get('/campgrounds/:id' , catchError(async(req, res) =>{
     const {id} = req.params;
-    const camp = await cammod.findById(id);
+    const camp = await cammod.findById(id).populate('reviews');
     res.render('campground/show.ejs' , { camp});
 }));
+
+app.post('/campgrounds/:id/reiview' , catchError(async(req,res) =>{
+  
+  const {id} = req.params;
+  const camp = await cammod.findById(id);
+
+  const {review , rating} =  req.body;
+  const reviews_data = await reviewSchema({body : review, rating});
+
+  await reviews_data.save();
+  camp.reviews.push(reviews_data._id);
+  await camp.save();
+
+  res.redirect(`/campgrounds/${id}`)
+
+}))
 
 
 app.post('/campgrounds', catchError(async (req, res) => {
