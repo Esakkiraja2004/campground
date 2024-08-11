@@ -1,19 +1,29 @@
-
 const mongoose = require('mongoose');
+const review = require('./review'); // Assuming 'review' exports the Review model, not the schema
 
-const campsch = new mongoose.Schema ({
-    title : 'string',
-    location : 'string',
+const campSchema = new mongoose.Schema({
+    title: 'string',
+    location: 'string',
     place: 'string',
-    description:'string',
+    description: 'string',
     image: 'string',
     price: 'number',
-    reviews:[{
+    reviews: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'review'
+        ref: 'review' // Ensure this matches the model name
     }]
 });
 
-const cammod = new mongoose.model('camp',campsch)
+campSchema.post('findOneAndDelete', async (docs) => {
+    if (docs) {
+        await review.deleteMany({
+            _id: {
+                $in: docs.reviews
+            }
+        });
+    }
+});
 
-module.exports = cammod
+const Camp = mongoose.model('Camp', campSchema);
+
+module.exports = Camp;

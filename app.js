@@ -70,7 +70,7 @@ app.get('/campgrounds/:id' , catchError(async(req, res) =>{
     res.render('campground/show.ejs' , { camp});
 }));
 
-app.post('/campgrounds/:id/reiview' , catchError(async(req,res) =>{
+app.post('/campgrounds/:id/review' , catchError(async(req,res) =>{
   
   const {id} = req.params;
   const camp = await cammod.findById(id);
@@ -85,6 +85,18 @@ app.post('/campgrounds/:id/reiview' , catchError(async(req,res) =>{
   res.redirect(`/campgrounds/${id}`)
 
 }))
+
+app.delete('/campgrounds/:id/reviews/:reviewId', catchError(async (req, res) => {
+  const { id, reviewId } = req.params;
+
+  // Pull the reviewId from the camp's reviews array
+  await cammod.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+
+  // Delete the review document itself
+  await reviewSchema.findByIdAndDelete(reviewId);
+
+  res.redirect(`/campgrounds/${id}`);
+}));
 
 
 app.post('/campgrounds', catchError(async (req, res) => {
