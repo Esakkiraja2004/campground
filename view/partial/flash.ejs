@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #flash-message {
+            margin-top: 5rem;
+            transition: opacity 0.5s ease-out;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Flash Messages -->
+    <% if (success_msg && success_msg.length) { %>
+        <div id="flash-message" role="alert" class="alert alert-success">
+            <%= success_msg %>
+        </div>
+    <% } %>
+
+    <% if (error_msg && error_msg.length ) { %>
+        <div id="flash-message" class="alert alert-danger">
+            <%= error_msg %>
+        </div>
+    <% } %>
+
+    <% if (review_msg && review_msg.length) { %>
+        <div id="flash-message" role="alert" class="alert alert-success">
+            <%= review_msg %>
+        </div>
+    <% } %>
+
+    <% if (update_msg && update_msg.length ) { %>
+        <div id="flash-message" class="alert alert-success">
+            <%= update_msg %>
+        </div>
+    <% } %>
+
+    <!-- Your content goes here -->
+
+    <!-- JavaScript to remove flash message after 5 seconds -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessage = document.getElementById('flash-message');
+
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.style.transition = 'opacity 0.5s ease-out';
+                    flashMessage.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        flashMessage.remove();
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

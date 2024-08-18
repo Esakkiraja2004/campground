@@ -29,29 +29,13 @@ router.get('/:id', catchError(async (req, res) => {
   res.render('campground/show.ejs', { camp });
 }));
 
-router.post('/:id/review', catchError(async (req, res) => {
-  const { id } = req.params;
-  const camp = await cammod.findById(id);
-  const { review, rating } = req.body;
-  const reviews_data = await reviewSchema({ body: review, rating });
-  await reviews_data.save();
-  camp.reviews.push(reviews_data._id);
-  await camp.save();
-  res.redirect(`/campgrounds/${id}`);
-}));
-
-router.delete('/:id/reviews/:reviewId', catchError(async (req, res) => {
-  const { id, reviewId } = req.params;
-  await cammod.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-  await reviewSchema.findByIdAndDelete(reviewId);
-  res.redirect(`/campgrounds/${id}`);
-}));
 
 router.post('/', catchError(async (req, res) => {
   const { error } = joiSchema.validate(req.body);
   if (error) return res.status(400).render('campground/error', { err: error });
   const data = await new cammod(req.body);
   await data.save();
+  req.flash('success', 'Campground created successfully!');
   res.redirect('/campgrounds');
 }));
 
@@ -67,12 +51,14 @@ router.put('/:id', catchError(async (req, res) => {
   const { id } = req.params;
   const camp = await cammod.findByIdAndUpdate(id, { ...req.body });
   await camp.save();
+  req.flash('update', 'Campground updated successfully!');
   res.redirect(`/campgrounds/${id}`);
 }));
 
 router.delete('/:id', catchError(async (req, res) => {
   const { id } = req.params;
   await cammod.findByIdAndDelete(id);
+  req.flash('error', 'Campground has be deleted.');
   res.redirect('/campgrounds');
 }));
 

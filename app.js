@@ -7,7 +7,30 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 3000;
 
+const session = require('express-session');
+const flash = require('connect-flash');
+
+// Set up session middleware
+app.use(session({
+  secret: 'thisIsVerySecret', // Replace with your own secret key
+  resave: false,
+}));
+
+// Set up flash middleware
+app.use(flash());
+
+// Set up a middleware to make flash messages available to all views
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success');
+  res.locals.error_msg = req.flash('error');
+  res.locals.review_msg = req.flash('review');
+  res.locals.update_msg = req.flash('update');
+  next();
+});
+
+
 const campgroundsRoutes = require('./routes/campground');
+const reviewRoutes = require('./routes/review');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -30,9 +53,10 @@ connectDB();
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'view'));
-app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/campgrounds', campgroundsRoutes);
+app.use('/campgrounds/:id/review',reviewRoutes )
 
 app.all("*", (req, res, next) => {
   next(new expressError('OOPS page not found!!', 404));
