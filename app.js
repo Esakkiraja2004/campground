@@ -5,6 +5,9 @@ const methodOverride = require('method-override');
 const path = require('path');
 const mongoose = require('mongoose');
 const app = express();
+const passport  = require('passport');
+const localStratagy = require('passport-local');
+const userSchema = require('./models/user')
 const port = 3000;
 
 const session = require('express-session');
@@ -54,9 +57,21 @@ app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'view'));
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use( new localStratagy(userSchema.authenticate()));
+
+passport.serializeUser(userSchema.serializeUser());
+passport.deserializeUser(userSchema.deserializeUser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/review',reviewRoutes )
+
+app.get('/register', async (req, res) => {
+  const user = new user({email:"ertyu", username: "fghjkl"})
+  
+});
 
 app.all("*", (req, res, next) => {
   next(new expressError('OOPS page not found!!', 404));
