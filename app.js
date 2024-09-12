@@ -69,7 +69,9 @@ app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/review',reviewRoutes )
 
 app.get('/register', async (req, res) => {
-  const user = new user({email:"ertyu", username: "fghjkl"})
+  const user = new userSchema({email:"ertyu", username: "fghjkl"})
+  const newUser = await userSchema.register(user,'hello')
+  res.send(newUser)
   
 });
 

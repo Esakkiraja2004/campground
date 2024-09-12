@@ -3,7 +3,7 @@ const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = mongoose.Schema({
-    emai:{
+    email:{
         type :'string',
         required: true,
         unique: true
