@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router({mergeParams: true});
+const router = express.Router();
 const catchError = require('../utils/catchError');
 const cammod = require('../models/schema');
 const reviewSchema = require('../models/review');

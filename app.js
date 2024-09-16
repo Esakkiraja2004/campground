@@ -34,6 +34,7 @@ app.use((req, res, next) => {
 
 const campgroundsRoutes = require('./routes/campground');
 const reviewRoutes = require('./routes/review');
+const registerRoutes = require('./routes/register');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -67,13 +68,16 @@ passport.deserializeUser(userSchema.deserializeUser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/review',reviewRoutes )
+app.use('/register',registerRoutes)
 
-app.get('/register', async (req, res) => {
-  const user = new userSchema({email:"ertyu", username: "fghjkl"})
-  const newUser = await userSchema.register(user,'hello')
-  res.send(newUser)
+// app.get('/register', async (req, res) => {
+//   const user = new userSchema({email:"ertyu", username: "fghjkl"})
+//   const newUser = await userSchema.register(user,'hello')
+//   res.send(newUser)
   
-});
+// });
+
+
 
 app.all("*", (req, res, next) => {
   next(new expressError('OOPS page not found!!', 404));
