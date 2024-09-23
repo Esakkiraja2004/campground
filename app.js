@@ -68,7 +68,7 @@ passport.deserializeUser(userSchema.deserializeUser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/review',reviewRoutes )
-app.use('/register',registerRoutes)
+app.use('/',registerRoutes)
 
 // app.get('/register', async (req, res) => {
 //   const user = new userSchema({email:"ertyu", username: "fghjkl"})
