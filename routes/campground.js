@@ -14,12 +14,14 @@ const joiSchema = joi.object({
   price: joi.number().required()
 });
 
+const {isLoggedIn} = require('../middleWare/loginMiddleWare');
+
 router.get('/', catchError(async (req, res) => {
   const camp = await cammod.find({});
   res.render('campground/camp', { camp });
 }));
 
-router.get('/newcamp', (req, res) => {
+router.get('/newcamp',isLoggedIn ,  (req, res) => {
   res.render('campground/new.ejs');
 });
 

@@ -32,6 +32,8 @@ app.use((req, res, next) => {
 });
 
 
+const isLoggedIn = require('./middleWare/loginMiddleWare');
+
 const campgroundsRoutes = require('./routes/campground');
 const reviewRoutes = require('./routes/review');
 const registerRoutes = require('./routes/register');
