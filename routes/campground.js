@@ -16,7 +16,7 @@ const joiSchema = joi.object({
 
 const {isLoggedIn} = require('../middleWare/loginMiddleWare');
 
-router.get('/', catchError(async (req, res) => {
+router.get('/',isLoggedIn, catchError(async (req, res) => {
   const camp = await cammod.find({});
   res.render('campground/camp', { camp });
 }));
@@ -32,7 +32,7 @@ router.get('/:id', catchError(async (req, res) => {
 }));
 
 
-router.post('/', catchError(async (req, res) => {
+router.post('/', isLoggedIn , catchError(async (req, res) => {
   const { error } = joiSchema.validate(req.body);
   if (error) return res.status(400).render('campground/error', { err: error });
   const data = await new cammod(req.body);
@@ -41,13 +41,13 @@ router.post('/', catchError(async (req, res) => {
   res.redirect('/campgrounds');
 }));
 
-router.get('/:id/edit', catchError(async (req, res) => {
+router.get('/:id/edit', isLoggedIn , catchError(async (req, res) => {
   const { id } = req.params;
   const camp = await cammod.findById(id);
   res.render('campground/edit.ejs', { camp });
 }));
 
-router.put('/:id', catchError(async (req, res) => {
+router.put('/:id', isLoggedIn , catchError(async (req, res) => {
   const { error } = joiSchema.validate(req.body);
   if (error) return res.status(400).render('campground/error', { err: error });
   const { id } = req.params;
@@ -57,7 +57,7 @@ router.put('/:id', catchError(async (req, res) => {
   res.redirect(`/campgrounds/${id}`);
 }));
 
-router.delete('/:id', catchError(async (req, res) => {
+router.delete('/:id', isLoggedIn , catchError(async (req, res) => {
   const { id } = req.params;
   await cammod.findByIdAndDelete(id);
   req.flash('error', 'Campground has be deleted.');
