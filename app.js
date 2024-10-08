@@ -24,12 +24,14 @@ app.use(flash());
 
 // Set up a middleware to make flash messages available to all views
 app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
   res.locals.success_msg = req.flash('success');
   res.locals.error_msg = req.flash('error');
   res.locals.review_msg = req.flash('review');
   res.locals.update_msg = req.flash('update');
   next();
 });
+
 
 
 const isLoggedIn = require('./middleWare/loginMiddleWare');

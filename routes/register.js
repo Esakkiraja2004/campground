@@ -27,7 +27,7 @@ router.get('/login',(req, res) => {
     res.render('campground/login');
 });
 
-router.post('/login', passport.authenticate('local', {failureFlash : true , failureRedirect : '/login'}) ,(req,res) => {
+router.post('/login', passport.authenticate('local', {successRedirect: '/campgrounds',failureRedirect: '/login',failureFlash: true }) ,(req,res) => {
     req.flash('success','Successfully logged in')
     res.redirect('/campgrounds');
 });
@@ -35,7 +35,8 @@ router.post('/login', passport.authenticate('local', {failureFlash : true , fail
 router.get('/logout', (req, res, next) => {
     req.logout(function(err) {
         if (err) { return next(err); }
-        req.flash('success', 'Goodbye');
+        req.logout(); // Passport method to log out the user
+        req.flash('success', 'You have been logged out'); // Optional: set flash message
         res.redirect('/login');
     });
 });
