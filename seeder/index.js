@@ -29,6 +29,7 @@ const sd = async () => {
     for(let i = 0; i <50;i++) {
         const ra = Math.floor(Math.random() *1000);
         const data = new cammod({
+            author : '66e865d251bf9e7e699894bc',
             title: `${cities[ra].city}`,
             location: `${cities[ra].state}`,
             place:`${sam(descriptors)} , ${sam(places)}`,
