@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const review = require('./review'); // Assuming 'review' exports the Review model, not the schema
+const User = require('./user');
 
 const campSchema = new mongoose.Schema({
     title: 'string',
@@ -8,6 +9,10 @@ const campSchema = new mongoose.Schema({
     description: 'string',
     image: 'string',
     price: 'number',
+    author : {
+        type :mongoose.Schema.Types.ObjectId,
+        ref : "User"
+    },
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'review' // Ensure this matches the model name

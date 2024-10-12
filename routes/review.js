@@ -11,6 +11,7 @@ router.post('/', catchError(async (req, res) => {
     const camp = await cammod.findById(id);
     const { review, rating } = req.body;
     const reviews_data = await reviewSchema({ body: review, rating });
+    reviews_data.author = req.user._id;
     await reviews_data.save();
     camp.reviews.push(reviews_data._id);
     await camp.save();

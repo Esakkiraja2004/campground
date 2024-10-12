@@ -25,17 +25,28 @@ router.get('/newcamp',isLoggedIn ,  (req, res) => {
   res.render('campground/new.ejs');
 });
 
-router.get('/:id', catchError(async (req, res) => {
-  const { id } = req.params;
-  const camp = await cammod.findById(id).populate('reviews');
-  res.render('campground/show.ejs', { camp });
+router.get('/:id', catchError(async (req, res,) => {
+  const camp = await cammod.findById(req.params.id).populate({
+      path: 'reviews',
+      populate: {
+          path: 'author'
+      }
+  }).populate('author');
+  console.log(camp);
+  if (!camp) {
+      req.flash('error', 'Cannot find that campground!');
+      return res.redirect('/campgrounds');
+  }
+  res.render('campground/show', { camp });
 }));
+
 
 
 router.post('/', isLoggedIn , catchError(async (req, res) => {
   const { error } = joiSchema.validate(req.body);
   if (error) return res.status(400).render('campground/error', { err: error });
   const data = await new cammod(req.body);
+  data.author = req.user._id;
   await data.save();
   req.flash('success', 'Campground created successfully!');
   res.redirect('/campgrounds');
