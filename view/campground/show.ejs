@@ -19,13 +19,17 @@
                     <p class="card-text"><b>Place:</b> <span style="color:grey;"><%= camp.place %></span></p>
                     <p class="card-text"><b>Submitted By:</b> <span style="color:grey;"><%= camp.author.username %></span></p>
                     <p class="card-text"><b>Description:</b> <small><%= camp.description %></small></p>
-                    <div class="text-center mt-3">
-                        <form action="/campgrounds/<%= camp._id %>?_method=DELETE" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
-                        </form>
-                        <a href="/campgrounds" class="btn btn-secondary btn-sm">Back</a>
-                        <a href="/campgrounds/<%= camp._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
-                    </div>
+
+                    <% if (current_user && camp.author.equals(current_user._id)) { %>
+                        <div class="text-center mt-3">
+                            <form action="/campgrounds/<%= camp._id %>?_method=DELETE" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
+                            </form>
+                            <a href="/campgrounds" class="btn btn-secondary btn-sm">Back</a>
+                            <a href="/campgrounds/<%= camp._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
+                        </div>
+                    <% } %>
+                    
                 </div>
             </div>
         </div>

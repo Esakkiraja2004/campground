@@ -35,7 +35,6 @@ router.post('/login', passport.authenticate('local', {successRedirect: '/campgro
 router.get('/logout', (req, res, next) => {
     req.logout(function(err) {
         if (err) { return next(err); }
-        req.logout(); // Passport method to log out the user
         req.flash('success', 'You have been logged out'); // Optional: set flash message
         res.redirect('/login');
     });

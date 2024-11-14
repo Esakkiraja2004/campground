@@ -64,7 +64,13 @@ app.set('views', path.join(__dirname, 'view'));
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use( new localStratagy(userSchema.authenticate()));
+passport.use( new localStratagy(userSchema.authenticate())); 
+
+passport.use(new localStratagy({
+  usernameField: 'username',  // Update to 'username' since it's now used in the form
+  passwordField: 'password'   // Keep passwordField as 'password'
+}, userSchema.authenticate()));
+
 
 passport.serializeUser(userSchema.serializeUser());
 passport.deserializeUser(userSchema.deserializeUser());

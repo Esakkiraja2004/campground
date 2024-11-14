@@ -37,7 +37,7 @@ router.get('/:id', catchError(async (req, res,) => {
       req.flash('error', 'Cannot find that campground!');
       return res.redirect('/campgrounds');
   }
-  res.render('campground/show', { camp });
+  res.render('campground/show', { camp, current_user: req.user });
 }));
 
 
