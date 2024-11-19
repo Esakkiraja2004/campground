@@ -25,11 +25,10 @@
                             <form action="/campgrounds/<%= camp._id %>?_method=DELETE" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
                             </form>
+                    <% } %>
                             <a href="/campgrounds" class="btn btn-secondary btn-sm">Back</a>
                             <a href="/campgrounds/<%= camp._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
-                        </div>
-                    <% } %>
-                    
+                        </div>            
                 </div>
             </div>
         </div>

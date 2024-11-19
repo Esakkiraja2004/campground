@@ -5,6 +5,7 @@ const cammod = require('../models/schema');
 const reviewSchema = require('../models/review');
 const joi = require('joi');
 
+
 const joiSchema = joi.object({
   title: joi.string().required(),
   location: joi.string().required(),
@@ -15,6 +16,7 @@ const joiSchema = joi.object({
 });
 
 const {isLoggedIn} = require('../middleWare/loginMiddleWare');
+const isAuthorized = require('../middleWare/isAuthor'); 
 
 router.get('/',isLoggedIn, catchError(async (req, res) => {
   const camp = await cammod.find({});
@@ -52,16 +54,15 @@ router.post('/', isLoggedIn , catchError(async (req, res) => {
   res.redirect('/campgrounds');
 }));
 
-router.get('/:id/edit', isLoggedIn , catchError(async (req, res) => {
+router.get('/:id/edit', isLoggedIn , isAuthorized ,  catchError(async (req, res) => {
   const { id } = req.params;
   const camp = await cammod.findById(id);
   res.render('campground/edit.ejs', { camp });
 }));
 
-router.put('/:id', isLoggedIn , catchError(async (req, res) => {
+router.put('/:id', isLoggedIn , isAuthorized ,  catchError(async (req, res) => {
   const { error } = joiSchema.validate(req.body);
   if (error) return res.status(400).render('campground/error', { err: error });
-  const { id } = req.params;
   const camp = await cammod.findByIdAndUpdate(id, { ...req.body });
   await camp.save();
   req.flash('update', 'Campground updated successfully!');
