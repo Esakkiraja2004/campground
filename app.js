@@ -75,17 +75,12 @@ passport.use(new localStratagy({
 passport.serializeUser(userSchema.serializeUser());
 passport.deserializeUser(userSchema.deserializeUser());
 
+// ------------------------> API <------------------------------
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/review',reviewRoutes )
 app.use('/',registerRoutes)
-
-// app.get('/register', async (req, res) => {
-//   const user = new userSchema({email:"ertyu", username: "fghjkl"})
-//   const newUser = await userSchema.register(user,'hello')
-//   res.send(newUser)
-  
-// });
 
 
 

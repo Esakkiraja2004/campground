@@ -1,27 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const catchError = require('../utils/catchError');
-const cammod = require('../models/schema');
-const reviewSchema = require('../models/review');
 
-const campground = require('../controllers/campground')
+
+const campgroundController = require('../controllers/campground')
 
 
 const {isLoggedIn} = require('../middleWare/loginMiddleWare');
 const isAuthorized = require('../middleWare/isAuthor'); 
 
-router.get('/',isLoggedIn, catchError(campground.index));
+// =========================
+// Campground Routes
+// =========================
 
-router.get('/newcamp',isLoggedIn , campground.newCampground  );
+// Root: View all campgrounds & create a new campground
+router.route('/')
+    .get(isLoggedIn, catchError(campgroundController.index))            // GET: List all campgrounds
+    .post(isLoggedIn, catchError(campgroundController.postNewCampground)); // POST: Create new campground
 
-router.get('/:id', catchError(campground.getInfo));
+// New Campground: Form to create a new campground
+router.route('/newcamp')
+    .get(isLoggedIn, campgroundController.newCampground);               // GET: New campground form
 
-router.post('/', isLoggedIn , catchError(campground.postNewCampground));
+// Specific Campground: View details, edit, or delete
+router.route('/:id')
+    .get(catchError(campgroundController.getInfo))                      // GET: View specific campground
+    .put(isLoggedIn, isAuthorized, catchError(campgroundController.putEditDetails)) // PUT: Submit edits
+    .delete(isLoggedIn, catchError(campgroundController.deleteCampground)); // DELETE: Remove campground
 
-router.get('/:id/edit', isLoggedIn , isAuthorized ,  catchError(campground.editCampground));
+// Edit Campground: Form to edit a specific campground
+router.route('/:id/edit')
+    .get(isLoggedIn, isAuthorized, catchError(campgroundController.editCampground)); // GET: Edit form
 
-router.put('/:id', isLoggedIn , isAuthorized ,  catchError(campground.putEditDetails));
-
-router.delete('/:id', isLoggedIn , catchError(campground.deleteCampground));
 
 module.exports = router;
